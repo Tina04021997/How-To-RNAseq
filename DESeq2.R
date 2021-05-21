@@ -33,37 +33,7 @@ all(rownames(coldata) == colnames(cts))
 
 
 ##### Constructing DESeqDataSet #####
-# Download packages
-install.packages("BiocStyle")
-install.packages('knitr', dependencies = TRUE)
-install.packages("rmarkdown")
-install.packages("xfun")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install("DESeq2")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install("EnhancedVolcano")
-install.packages("tidyverse")
-install.packages("ggplot2")
-install.packages("pheatmap")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install("org.Mm.eg.db")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install("clusterProfiler")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install("enrichplot", force = TRUE)
-install.packages("stringi")
-install.packages("factoextra")
-
+# Load packages
 library("EnhancedVolcano")
 library("BiocStyle")
 library("knitr")
