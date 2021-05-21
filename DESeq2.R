@@ -127,8 +127,8 @@ EnhancedVolcano(res,
 
 
 ##### PCA plots #####
-deg <- vsd[row.names(vsd) %in% row.names(deg),]
-result <- deg
+de <- vsd[row.names(vsd) %in% row.names(deg),]
+result <- de
 pca_result <- prcomp(t(result))
 pca_result_perc <- round(100*pca_result$sdev^2/sum(pca_result$sdev^2),1)
 df_pca_result <- data.frame(PC1 = pca_result$x[,1], PC2 = pca_result$x[,2], sample = colnames(result), time.length = coldata$time.length)
