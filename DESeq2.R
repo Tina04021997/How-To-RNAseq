@@ -155,28 +155,3 @@ ggplot(df, aes(PCs, pca_result_perc, group = 1)) +
   geom_point() +
   geom_line()
 
-
-##### Functional analysis (GO analysis)#####
-UP <- deg %>% subset(log2FoldChange > 1) %>% tibble:: rownames_to_column('gene')
-DOWN <- deg %>% subset(log2FoldChange < -1) %>% tibble:: rownames_to_column('gene')
-
-# Check the keytypes in Mouse database
-organism <- org.Mm.eg.db
-keytypes(organism)
-
-# Create enrichGO object
-eGO_UP <- enrichGO(gene = UP$gene,
-                   OrgDb = organism,
-                   keyType = 'SYMBOL',
-                   ont = 'ALL',
-                   pAdjustMethod = 'BH',
-                   pvalueCutoff = 0.01,
-                   qvalueCutoff = 0.05)
-
-eGO_DOWN <- enrichGO(gene = DOWN$gene,
-                   OrgDb = organism,
-                   keyType = 'SYMBOL',
-                   ont = 'ALL',
-                   pAdjustMethod = 'BH',
-                   pvalueCutoff = 0.01,
-                   qvalueCutoff = 0.05)
