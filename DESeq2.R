@@ -123,20 +123,35 @@ write.csv(as.data.frame(subset(resOrdered, padj < 0.05)),
 
 
 ##### Volcano plot #####
-keyvals <- ifelse(
-  res$log2FoldChange < -2.5, 'royalblue',
-  ifelse(res$log2FoldChange > 2.5, 'red',
-         'grey'))
-keyvals[is.na(keyvals)] <- 'black'
-names(keyvals)[keyvals == 'red'] <- 'UP'
-names(keyvals)[keyvals == 'grey'] <- 'INSIGNIFICANT'
-names(keyvals)[keyvals == 'royalblue'] <- 'DOWN'
+fc <- 1
+q <- 0.05
+
+keyvals <- rep('grey75', nrow(res))
+names(keyvals) <- rep('INSIGNIFICANT', nrow(res))
+
+keyvals[which(abs(res$log2FoldChange) > fc & res$padj > q)] <- 'grey50'
+
+keyvals[which(abs(res$log2FoldChange) > -fc & res$padj < q)] <- 'grey25'
+
+keyvals[which(res$log2FoldChange < -fc & res$padj < q)] <- 'royalblue'
+names(keyvals)[which(res$log2FoldChange < -fc & res$padj < q)] <- 'DOWN'
+
+keyvals[which(res$log2FoldChange > fc & res$padj < q)] <- 'red'
+names(keyvals)[which(res$log2FoldChange > fc & res$padj < q)] <- 'UP'
+
+unique(keyvals)
+unique(names(keyvals))
+
+topGene <- res[which(res$padj < 10^-30),]
+
+install.packages("ggrepel")
+library(ggrepel)
 
 EnhancedVolcano(res,
                 lab = rownames(res),
                 x = 'log2FoldChange',
                 y = 'pvalue',
-                selectLab = rownames(res)[which(names(keyvals) %in% c('high', 'low'))],
+                selectLab = c(row.names(topGene)),
                 xlab = bquote(~Log[2]~ 'fold change'),
                 ylab = bquote(~Log[10]~ adjusted~italic(P)),
                 title = 'ZT02 vs ZT06',
@@ -148,7 +163,6 @@ EnhancedVolcano(res,
                 labSize = 5.0,
                 labCol = 'black',
                 labFace = 'bold',
-                boxedLabels = TRUE,
                 colAlpha = 0.5,
                 legendPosition = 'right',
                 legendLabSize = 11,
