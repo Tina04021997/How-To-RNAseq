@@ -1,5 +1,5 @@
 # Author: Tina Yang
-# Date: May 19,2021
+# Date: May 21,2021
 # RNA-seq data analization with DESeq2
 # setwd("~/Desktop/Joey Lab/How-To-RNAseq")
 
@@ -7,11 +7,48 @@
 # Load the counts txt file
 GE <- read.table("RNAseq_GE.txt", header=T)
 
+# Load packages
+library("biomaRt")
+library("dplyr")
+library("tidyverse")
+
+# Convert ENSMUSG number to Gene name
+ENSMUSG <- GE$Geneid
+require(biomaRt)
+
+ensembl <- useMart('ensembl', dataset = 'mmusculus_gene_ensembl')
+
+annot <- getBM(
+  attributes = c(
+    'mgi_symbol',
+    'external_gene_name',
+    'ensembl_gene_id',
+    'entrezgene_id',
+    'gene_biotype'),
+  filters = 'ensembl_gene_id',
+  values = ENSMUSG,
+  mart = ensembl)
+
+ge <- merge(
+  x = as.data.frame(GE),
+  y =  annot,
+  by.y = 'ensembl_gene_id',
+  all = F,
+  by.x = 'Geneid',
+  no.dups = T)
+
 # Extract the wanted columns
-GE_counts <- GE[,c(1,7:12)]
+GE_counts <- ge[,c(7:13)]
+GE_counts <- GE_counts[,c(7,1:6)]
 
 # Rename the columns
 colnames(GE_counts) <- c("Gene","ZT02(R1)","ZT02(R2)","ZT02(R3)","ZT06(R1)","ZT06(R2)","ZT06(R3)")
+
+# Remove rows with empty or NA values in Gene
+GE_counts <- GE_counts[!(is.na(GE_counts$Gene) | GE_counts$Gene==""), ]
+
+# Remove duplicate
+GE_counts <- GE_counts %>% distinct(Gene, .keep_all = TRUE)
 
 # Save as csv file
 write.csv(GE_counts, file = "GE_counts.csv", row.names = F)
@@ -26,7 +63,6 @@ colnames(cts) <- row.names(coldata)
 
 # Convert coldata from characters to factors
 coldata$time.length <- factor(coldata$time.length)
-coldata$type <- factor(coldata$type)
 
 # Make sure that the columnm names of cts == row names of coldata
 all(rownames(coldata) == colnames(cts))
@@ -66,7 +102,7 @@ dds$time.length <- relevel(dds$time.length, ref = "2")
 dds <- DESeq(dds)
 res <- results(dds)
 
-# Under adjusted p value = 0.1, the number of up-regulated genes is 4961; number of down-regulated genes is 5363
+# Under adjusted p value = 0.1, the number of up-regulated genes is 4914; number of down-regulated genes is 5317
 summary(res)
 
 ## We can: reorder the results by the smallest p value
@@ -154,4 +190,35 @@ ggplot(df, aes(PCs, pca_result_perc, group = 1)) +
   geom_text(aes(label = pca_result_perc), vjust = -0.3, size = 3.5) +
   geom_point() +
   geom_line()
+
+
+
+##### Functional analysis (GO analysis)#####
+UP <- deg %>% subset(log2FoldChange > 1) %>% tibble:: rownames_to_column('gene')
+DOWN <- deg %>% subset(log2FoldChange < -1) %>% tibble:: rownames_to_column('gene')
+
+# Check the keytypes in Mouse database
+organism <- org.Mm.eg.db
+keytypes(organism)
+
+# Create enrichGO object
+eGO_UP <- enrichGO(gene = UP$gene,
+                   OrgDb = organism,
+                   keyType = "SYMBOL",
+                   ont = "ALL",
+                   pAdjustMethod = "BH",
+                   pvalueCutoff = 0.01,
+                   qvalueCutoff = 0.05)
+
+eGO_DOWN <- enrichGO(gene = DOWN$gene,
+                     OrgDb = organism,
+                     keyType = "SYMBOL",
+                     ont = "ALL",
+                     pAdjustMethod = "BH",
+                     pvalueCutoff = 0.01,
+                     qvalueCutoff = 0.05)
+
+# Create dot plot
+dotplot(eGO_UP, showCategory = 20) + ggtitle('GO_UPregulated')
+dotplot(eGO_DOWN, showCategory = 20) + ggtitle('GO_DOWNregulated')
 
