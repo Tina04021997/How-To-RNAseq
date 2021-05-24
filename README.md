@@ -1,8 +1,8 @@
 # How-to-RNAseq
-- This is the pipeline for RNA-seq DESeq2 analyzing, which mainly follows the workflow written by Michael I. Love et el. 
+This is the pipeline for RNA-seq DESeq2 analyzing, which uses the data from publication [A circadian clock regulates efflux by the
+blood-brain barrier in mice and human cells](https://www.nature.com/articles/s41467-020-20795-9.pdf).
 
-
-## Pipline workflow
+## Pipeline workflow
 Which includes:
 1. QC test: FastQC + MultiQC
 2. Alignment: STAR
@@ -20,9 +20,15 @@ Which includes:
 
 
 ## Input data
-Download 8 fatsq PE files from GEO [GSE52778](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE52778).
+For this exercise, download ctrl ZT2, ZT6 each 3 pairs of fatsq files (total 12 fastq files cz PE) from [GEO](https://www.ncbi.nlm.nih.gov/sra?term=SRX6720701).
 
-We will use only "SRR1039508","SRR1039509", "SRR1039512","SRR1039513", "SRR1039516","SRR1039517","SRR1039520","SRR1039521" for comparison bwtween untreated and treated (DEX) groups.
+Now we'll have two conditions, three replicates:
+- CTRL ZT2 replicate1 (SRR9973379) --> ZT02(R1)
+- CTRL ZT2 replicate2 (SRR9973380) --> ZT02(R2)
+- CTRL ZT2 replicate3 (SRR9973381) --> ZT02(R3)
+- CTRL ZT6 replicate1 (SRR9973385) --> ZT06(R1)
+- CTRL ZT6 replicate2 (SRR9973386) --> ZT06(R2)
+- CTRL ZT6 replicate3 (SRR9973387) --> ZT06(R3)
 
 Use **sra-tools** to download these files with **download.sh** script.
 
@@ -34,13 +40,28 @@ $ tar -zxvf sratoolkit.2.11.0-ubuntu64.tar.gz
 
 ## Reference data
 Ensemble v102 GRCm38.
+```
+$ wget -c http://ftp.ensembl.org/pub/release-102/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz
+$ wget -c http://ftp.ensembl.org/pub/release-102/gtf/mus_musculus/Mus_musculus.GRCm38.102.gtf.gz
+$ gunzip Mus_musculus.GRCm38.dna.primary_assembly.fa.gz
+$ gunzip Mus_musculus.GRCm38.102.gtf.gz
+```
 
 ## Run Snakefile
 Run **Snakefile** by ```snakemake -p -j 20```
 
-## References
-Salmon Documentation
-- https://salmon.readthedocs.io/en/latest/salmon.html
+## Download counts.txt file from Linux to desktop
+Navigate to desktop's local terminal and enter the following scp line at command.
+```
+$scp LinuxUserName@avisIP:/LVM_data/tina/RNAseq/counts/counts.txt ~/Desktop/
+```
 
-QC for snakemake
-- https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/multiqc.html 
+## References
+SnakeMake STAR script
+- https://evodify.com/rna-seq-star-snakemake/ 
+
+FeatureCounts Documentation
+- http://bioinf.wehi.edu.au/featureCounts/  
+
+DESeq2 Documentation
+- http://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
