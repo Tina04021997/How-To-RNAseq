@@ -1,5 +1,5 @@
 # Author: Tina Yang
-# Date: May 21,2021
+# Date: May 24,2021
 # RNA-seq data analization with DESeq2
 # setwd("~/Desktop/Joey Lab/How-To-RNAseq")
 
@@ -206,7 +206,6 @@ ggplot(df, aes(PCs, pca_result_perc, group = 1)) +
   geom_line()
 
 
-
 ##### Functional analysis (GO analysis)#####
 UP <- deg %>% subset(log2FoldChange > 1) %>% tibble:: rownames_to_column('gene')
 DOWN <- deg %>% subset(log2FoldChange < -1) %>% tibble:: rownames_to_column('gene')
@@ -236,3 +235,23 @@ eGO_DOWN <- enrichGO(gene = DOWN$gene,
 dotplot(eGO_UP, showCategory = 20) + ggtitle('GO_UPregulated')
 dotplot(eGO_DOWN, showCategory = 20) + ggtitle('GO_DOWNregulated')
 
+
+##### Heatmap #####
+# DESeq2 offers two transformations for count data that stabilize the variance across the mean, we will use VST
+# Variance stabilizing transformation (VST)
+vsd <- vst(dds, blind = FALSE)
+vsd <- assay(vsd)
+# The transformed values are no longer counts, and are stored in the assay slot
+head(vsd, 3)
+
+g50 <- dd[order(dd$padj, decreasing = FALSE),][1:50,]
+g50 <- vsd[row.names(vsd) %in% row.names(g50),]
+
+DS <- select(coldata, time.length)
+
+## We can: Select top 50 DE genes based on log2FoldChange
+f50 <- dd[order(abs(dd$log2FoldChange), decreasing = TRUE),][1:50,]
+f50 <- vsd[row.names(vsd) %in% row.names(f50),]
+
+pheatmap(g50, angle_col = 45, annotation_col = DS, main = 'Top 50 DEGs based on adj-p')
+pheatmap(f50, angle_col = 45, annotation_col = DS, main = 'Top 50 DEGs based on adj-p')
