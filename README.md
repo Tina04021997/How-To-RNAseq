@@ -20,7 +20,7 @@ Which includes:
 
 
 ## Input data
-For this exercise, download ctrl ZT2, ZT6 each 3 pairs of fatsq files (total 12 fastq files cz PE) from [GEO](https://www.ncbi.nlm.nih.gov/sra?term=SRX6720701).
+For this exercise, download ctrl ZT2, ZT6 each 3 pairs of fatsq files (total 12 fastq files) from [GEO](https://www.ncbi.nlm.nih.gov/sra?term=SRX6720701).
 
 Now we'll have two conditions, three replicates:
 - CTRL ZT2 replicate1 (SRR9973379) --> ZT02(R1)
