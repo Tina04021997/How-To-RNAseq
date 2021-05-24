@@ -36,7 +36,7 @@ rule fastqc:
      shell:
          "fastqc {input} -o qc/fastqc"
 
-#Step2: Perfrom MultiQC
+#Step2: Perform MultiQC
 rule multiqc:
     input:
         expand(["qc/fastqc/{sample}_1_fastqc.html","qc/fastqc/{sample}_2_fastqc.html"], sample = SAMPLES),
