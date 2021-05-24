@@ -9,7 +9,7 @@ Which includes:
 3. Generate read summarization: featureCounts
 4. Differential Expression (in R Studio): DESeq2
 
-<img src="https://github.com/Tina04021997/How-To-RNAseq-exercise/blob/main/workflow.jpg" width="35%" height="35%">
+<img src="https://github.com/Tina04021997/How-to-RNAseq/blob/main/flow.jpg" width="35%" height="35%">
 
 ## Environments
 - STAR v2.7.8a
