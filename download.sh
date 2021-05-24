@@ -8,8 +8,6 @@ do
   /home/ldap_tina/sratoolkit.2.11.0-ubuntu64/bin/fasterq-dump SRR99733$i -O /LVM_data/tina/RNAseq/data/
 done
 
-
-
 for i in $(seq 85 1 87)
 do 
   /home/ldap_tina/sratoolkit.2.11.0-ubuntu64/bin/fasterq-dump SRR99733$i -O /LVM_data/tina/RNAseq/data/
