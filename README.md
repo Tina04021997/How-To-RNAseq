@@ -53,7 +53,7 @@ Run **Snakefile** by ```snakemake -p -j 20```
 ## Download counts.txt file from Linux to desktop
 Navigate to desktop's local terminal and enter the following scp line at command.
 ```
-$scp LinuxUserName@avisIP:/LVM_data/tina/RNAseq/counts/counts.txt ~/Desktop/
+$scp LinuxUserName@avisIP:[counts.txt file path] ~/Desktop/
 ```
 
 ## References
