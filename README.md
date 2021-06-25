@@ -51,7 +51,7 @@ $ gunzip Mus_musculus.GRCm38.102.gtf.gz
 Run **Snakefile** by ```snakemake -p -j 20```
 
 ## Download counts.txt file from Linux to desktop
-Navigate to desktop's local terminal and enter the following scp line at command.
+Navigate to desktop's local terminal and enter the following command at command line:
 ```
 $scp LinuxUserName@avisIP:[counts.txt file path] ~/Desktop/
 ```
